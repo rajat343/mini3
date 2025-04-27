@@ -68,17 +68,14 @@ def serve(port, server_name, all_ports):
     work_pb2_grpc.add_TaskManagerServicer_to_server(servicer, server)
     server.add_insecure_port(f'[::]:{port}')
     server.start()
-    print(f'{server_name} running at port {port}')
-
+    print(f'✅ {server_name} started gRPC server on port {port}')
+    # GIVE gRPC a moment to bind/listen
+    time.sleep(3)
+    # Now start task‐processing and stealing threads
     threading.Thread(target=servicer.process_tasks, daemon=True).start()
     threading.Thread(target=adaptive_steal, args=(all_ports, port, servicer), daemon=True).start()
-
-    try:
-        time.sleep(3000)  # 5 minutes
-    except KeyboardInterrupt:
-        pass
-    finally:
-        server.stop(0)
+    # Keep the server alive indefinitely
+    server.wait_for_termination()
 
 if __name__ == '__main__':
     port = int(sys.argv[1])

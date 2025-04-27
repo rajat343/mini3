@@ -1,28 +1,46 @@
-#!/bin/bash
+# #!/bin/bash
+# cd "$(dirname "$0")"
 
-# Navigate to project directory
+# # Activate your venv
+# source venv/bin/activate
+
+# ports=(50051 50052 50053 50054 50055)
+# names=(Server1 Server2 Server3 Server4 Server5)
+
+# for i in "${!ports[@]}"; do
+#   port=${ports[i]}
+#   name=${names[i]}
+#   echo "🚀 Starting $name on port $port..."
+#   cmd="cd $(pwd) && source venv/bin/activate && python server.py $port $name ${ports[*]}; exec bash"
+#   osascript -e "tell application \"Terminal\" to do script \"$cmd\""
+#   sleep 1
+# done
+
+# echo "✅ All 5 servers started in new Terminal tabs."
+
+
+
+
+
+
+
+#!/bin/bash
 cd "$(dirname "$0")"
 
-# Ports and server names
+# Activate your venv
+source venv/bin/activate
+
 ports=(50051 50052 50053 50054 50055)
-names=("Server1" "Server2" "Server3" "Server4" "Server5")
+names=(Server1 Server2 Server3 Server4 Server5)
 
-# Virtual environment activation
-venv_path="venv/bin/activate"
-
-# Check if venv exists
-if [ ! -f "$venv_path" ]; then
-  echo "❌ Virtual environment not found! Expected at: $venv_path"
-  exit 1
-fi
-
-# Command to run servers
-for i in {0..4}
-do
-  port=${ports[$i]}
-  name=${names[$i]}
+for i in "${!ports[@]}"; do
+  port=${ports[i]}
+  name=${names[i]}
   echo "Starting $name on port $port..."
-  osascript -e "tell application \"Terminal\" to do script \"cd $(pwd); source $venv_path; python server.py $port $name 50051 50052 50053 50054 50055\""
+  cmd="cd $(pwd) && source venv/bin/activate && python server.py $port $name ${ports[*]}; exec bash"
+  # suppress the "tab 1 of window id ..." output
+  osascript -e "tell application \"Terminal\" to do script \"$cmd\"" >/dev/null 2>&1
+  sleep 1
 done
 
-echo "✅ All servers started in new terminal windows with virtual environment activated."
+echo "✅ All 5 servers started in new Terminal tabs."

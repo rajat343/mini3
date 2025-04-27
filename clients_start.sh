@@ -1,21 +1,13 @@
 #!/bin/bash
-
-# Navigate to project directory
 cd "$(dirname "$0")"
 
-# Virtual environment activation
-venv_path="venv/bin/activate"
+# Activate your venv
+source venv/bin/activate
 
-# Check if venv exists
-if [ ! -f "$venv_path" ]; then
-  echo "❌ Virtual environment not found! Expected at: $venv_path"
-  exit 1
-fi
+# (Optional) give the servers a moment to be 100% ready
+echo "Waiting 5s for servers to warm up..."
+sleep 5
 
-# Activate virtual environment
-source $venv_path
-
-# Define task submissions (server_address, task_name, weight)
 # tasks=(
 #   "localhost:50051 Task-A1 10"
 #   "localhost:50052 Task-B1 8"
@@ -28,8 +20,6 @@ source $venv_path
 #   "localhost:50055 Task-D2 17"
 #   "localhost:50055 Task-E2 12"
 # )
-
-
 
 tasks=(
   "localhost:50051 Task-A1 10"
@@ -44,12 +34,9 @@ tasks=(
   "localhost:50051 Task-E2 12"
 )
 
-# Submit each task sequentially
-for task_info in "${tasks[@]}"
-do
-  echo "📤 Submitting: $task_info"
-  python client.py $task_info
-  sleep 1  # optional small wait between task submissions
+for info in "${tasks[@]}"; do
+  echo "Submitting: $info"
+  python client.py $info > /dev/null 2>&1
 done
 
-echo "✅ All client tasks submitted successfully from single terminal session."
+echo "✅ All client tasks submitted successfully."
