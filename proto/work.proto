@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+service TaskManager {
+  rpc SubmitTask(TaskRequest) returns (TaskResponse);
+  rpc StealTasks(StealRequest) returns (StealResponse);
+  rpc GetLoad(LoadRequest) returns (LoadResponse);
+}
+
+message TaskRequest {
+  string task = 1;
+  int32 weight = 2;
+}
+
+message TaskResponse {
+  string status = 1;
+}
+
+message StealRequest {
+  int32 max_tasks = 1;
+}
+
+message StealResponse {
+  repeated string tasks = 1;
+}
+
+message LoadRequest {}
+
+message LoadResponse {
+  int32 load = 1;
+}
